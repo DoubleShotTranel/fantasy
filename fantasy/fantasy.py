@@ -9,11 +9,12 @@ from tabulate import tabulate
 import warnings
 import time
 
-from config import CSV_FILE, TEAM_CSV_FILE, PLAYER_TEAM_CSV_FILE, NAME_POOLS, POSITIONS
+from config import CSV_FILE, TEAM_CSV_FILE, PLAYER_TEAM_CSV_FILE, NAME_POOLS, POSITIONS, WEBHOOK
 from Game_Sim import run_week, simulate_match
 from draft import city_draft, player_draft
 from scheduler import create_schedule, view_player_schedule
 from team_manager import manage_team
+from util import send_to_discord
 
 
 # Function to generate a random name based on species
@@ -738,7 +739,7 @@ def reset_GPs(reset_TPs = False):
 if __name__ == "__main__":
     warnings.simplefilter(action='ignore', category=FutureWarning)
     warnings.simplefilter(action='ignore', category=UserWarning)
-
+    send_to_discord("hey", WEBHOOK)
     while True:
         print("\n--- Player Roster Management ---")
         print("1. Add Players")
@@ -761,7 +762,7 @@ if __name__ == "__main__":
         #92, simulate match
         #93, run week
         
-        choice = input("Select an option (1-8): ").strip()
+        choice = input("Select an option (1-9): ").strip()
         
         if choice == "1":
             add_players()

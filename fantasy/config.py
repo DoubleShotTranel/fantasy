@@ -7,6 +7,8 @@ PLAYER_TEAM_CSV_FILE = "player_teams.csv"
 CITY_SCHEDULE = "city_schedule.csv"
 PLAYER_SCHEDULE = "player_schedule.csv"
 
+WEBHOOK = "https://discord.com/api/webhooks/1359271866279399556/S5bYe2rs25bjllyRNWl3jIIA0Q2WTQQ2BbqnMFCikseGpNh6-DsYgLFHn5tkungZKoWm"
+
 POSITIONS = ["QB", "WR", "RB", "TE", "K"]
 # Name pools categorized by species, with heroic, villainous, and WWE-style names
 NAME_POOLS = {
