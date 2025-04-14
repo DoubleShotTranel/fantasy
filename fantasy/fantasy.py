@@ -12,7 +12,7 @@ import time
 from config import CSV_FILE, TEAM_CSV_FILE, PLAYER_TEAM_CSV_FILE, NAME_POOLS, POSITIONS, WEBHOOK
 from Game_Sim import run_week, simulate_match
 from draft import city_draft, player_draft
-from scheduler import create_schedule, view_player_schedule
+from scheduler import create_schedule, view_player_schedule, finalize_week
 from team_manager import manage_team
 from util import send_to_discord
 
@@ -144,7 +144,7 @@ def create_player(auto_generate = False, position = "", defense_name = ""):
     
         #we're adding a defense
         else:
-            projected_skill = int((random.randint(1, 100)+random.randint(1, 100)+random.randint(1, 100)+random.randint(1, 100)+random.randint(1, 100))/5)
+            projected_skill = int((random.randint(60, 80)+random.randint(60, 80)+random.randint(60, 80)+random.randint(60, 80)+random.randint(60, 80))/5)
             if projected_skill < 55:
                 projected_skill = projected_skill + 20
             return [f"{defense_name} Defense", "DEF", "",0,0,0,0,0,0,"",projected_skill,"Active","No Team",defense_name, 0, 0]
@@ -527,26 +527,6 @@ def view_player_matchup(team_one = None, team_two = None):
         print("Invalid team name, try again")
         view_player_matchup(team_one = None, team_two = None)
 
-def add_def_players():
-    try:
-        players = []
-        players_df = pd.read_csv(CSV_FILE)
-        with open(TEAM_CSV_FILE, "r") as file:
-            reader = csv.reader(file)
-            for row in reader:
-                print(row)
-                if row[0] == "City":
-                    #skip the header
-                    pass
-                else:
-                    players.append(create_player(auto_generate = False, position = "DEF", defense_name = f"{row[0]} {row[1]}"))
-        with open(CSV_FILE, "a", newline="") as file:
-            writer = csv.writer(file)
-            writer.writerows(players)
-        print("added stats to the teams defense")
-    except FileNotFoundError:
-        print("No teams found yet. Please create teams first.")
-
 def assign_player_to_team(players_df, teams_df, team_name, choice):
     #set the players team to the current person drafting
     player_assigned = False
@@ -739,7 +719,7 @@ def reset_GPs(reset_TPs = False):
 if __name__ == "__main__":
     warnings.simplefilter(action='ignore', category=FutureWarning)
     warnings.simplefilter(action='ignore', category=UserWarning)
-    send_to_discord("hey", WEBHOOK)
+    
     while True:
         print("\n--- Player Roster Management ---")
         print("1. Add Players")
@@ -798,7 +778,7 @@ if __name__ == "__main__":
             reset_GPs(reset_TPs = True)
         elif choice == "98":
             reset_GPs(reset_TPs = False)
-        elif choice == "99":
-            add_def_players()
+        elif choice == '99':
+            finalize_week()
         else:
             print("Invalid option, please try again.")

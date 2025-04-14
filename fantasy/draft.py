@@ -1,8 +1,32 @@
 import pandas as pd
 import random
+import csv
 from config import CSV_FILE, TEAM_CSV_FILE, PLAYER_TEAM_CSV_FILE
 
+
+def add_def_players():
+    from fantasy import create_player
+    try:
+        players = []
+        players_df = pd.read_csv(CSV_FILE)
+        with open(TEAM_CSV_FILE, "r") as file:
+            reader = csv.reader(file)
+            for row in reader:
+                print(row)
+                if row[0] == "City":
+                    #skip the header
+                    pass
+                else:
+                    players.append(create_player(auto_generate = False, position = "DEF", defense_name = f"{row[0]} {row[1]}"))
+        with open(CSV_FILE, "a", newline="") as file:
+            writer = csv.writer(file)
+            writer.writerows(players)
+        print("added stats to the teams defense")
+    except FileNotFoundError:
+        print("No teams found yet. Please create teams first.")
+
 def city_draft():
+    add_def_players()
     players_df = pd.read_csv(CSV_FILE)
     teams_df = pd.read_csv(TEAM_CSV_FILE)
 
@@ -21,7 +45,7 @@ def city_draft():
 
         for team_index in draft_order:
             
-            team = teams_df.iloc[team_index]
+            team = teams_df.loc[team_index]
             team_name = team["Team_Name"]
             city_name = team["City"]
 

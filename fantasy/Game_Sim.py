@@ -3,8 +3,9 @@ import random
 import pandas as pd
 from IPython.display import display
 from tabulate import tabulate
-from config import CSV_FILE, TEAM_CSV_FILE, PLAYER_TEAM_CSV_FILE, CITY_SCHEDULE
+from config import CSV_FILE, TEAM_CSV_FILE, PLAYER_TEAM_CSV_FILE, CITY_SCHEDULE, WEBHOOK
 import time
+from util import send_to_discord
 
 
 def simulate_match(home_team = None, away_team = None):
@@ -526,9 +527,14 @@ def simulate_match(home_team = None, away_team = None):
 
     #update city team W/L record
     if home_score > away_score:
+        send_to_discord(f"{home_team} beats {away_team}!", WEBHOOK)
         update_team_points(winning_team = home_team, losing_team = away_team, team_type="City Team")
     else:
+        send_to_discord(f"{away_team} beats {home_team}!", WEBHOOK)
         update_team_points(winning_team = away_team, losing_team = home_team, team_type="City Team")
+
+    send_to_discord(f"{home_team} Score: {home_score}", WEBHOOK)
+    send_to_discord(f"{away_team} Score: {away_score}", WEBHOOK)
 
     #score defense
     if(home_score >= 35):

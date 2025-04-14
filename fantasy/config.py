@@ -130,7 +130,7 @@ NAME_POOLS = {
                  "of Rhodes", "King", "From Way Back"]
     },
     "Horror": {
-        "heroic": ["Strider", "Fallen Angel", "Cthulu"],
+        "heroic": ["Strider", "Fallen Angel", "Cthulhu"],
         "villainous": ["Nightmare", "Soul Sucker", "Karen", "Terror"],
         "wwe": ["Soul Collector", "Winged", "Dead", "Nightmare", "Fanatic", "Eldritch"],
         "first": ["Cyclops", "Crawling", "Invisible", "Razertooth", "Forsaken"],
