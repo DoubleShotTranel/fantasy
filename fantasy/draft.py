@@ -135,7 +135,11 @@ def player_draft():
                         (players_df["Position"].str.upper() == position)
                     ].sort_values(by="Projected_Skill", ascending=False)
 
-                    selected_player = available_players.iloc[random.randint(0, 4)]
+                    try:
+                        selected_player = available_players.iloc[random.randint(0, 4)]
+                    except:
+                        selected_player = available_players.iloc[0]
+
                     choice = selected_player["Name"]
                     print(f"The gods have decided to draft {choice}")
                     players_df, teams_df = assign_player_to_team(players_df, teams_df, team_name, choice)

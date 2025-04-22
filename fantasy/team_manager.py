@@ -247,6 +247,7 @@ def add_from_free_agents(team_name):
             if row[0] == team_name:
                 team_row = row
                 team_index = i
+                display_name = row[1]
                 break
         else:
             print("Team not found.")
@@ -279,7 +280,7 @@ def add_from_free_agents(team_name):
         team_data[team_index] = team_row
 
         # Step 5: Update both players in player database
-        players_df.loc[players_df["Name"] == picked_player, "Player_Team"] = team_name
+        players_df.loc[players_df["Name"] == picked_player, "Player_Team"] = display_name
         players_df.loc[players_df["Name"] == player_to_drop, "Player_Team"] = "No Team"
 
         # Step 6: Save everything

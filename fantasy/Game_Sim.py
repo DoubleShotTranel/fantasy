@@ -1,4 +1,4 @@
-from calendar import week
+﻿from calendar import week
 import random
 import pandas as pd
 from IPython.display import display
@@ -362,6 +362,7 @@ def simulate_match(home_team = None, away_team = None):
                 else:
                     print("Pass incomplete")
                     downs = downs + 1
+                players_df = murphys_law_protocol(target, offense_team, defence_team, players_df)
 
             elif(qb_choice=="Short Pass"):
                 #Choose who we target the throw to based off of finesse and Gumption stats of RB & TE
@@ -416,6 +417,7 @@ def simulate_match(home_team = None, away_team = None):
                 else:
                     print("Pass incomplete")
                     downs = downs + 1
+                players_df = murphys_law_protocol(target, offense_team, defence_team, players_df)
 
             elif(qb_choice=="Hand Off"):
                 #Choose who we target the throw to based off of Strength and Gumption stats of RB
@@ -471,6 +473,7 @@ def simulate_match(home_team = None, away_team = None):
                     else:
                         update_player_pts(home_def, 1)
                     downs = downs + 1
+                players_df = murphys_law_protocol(target, offense_team, defence_team, players_df)
 
             elif(qb_choice=="Rush"):
                 print(f"{qb_name} is deciding to {qb_choice}")
@@ -508,6 +511,8 @@ def simulate_match(home_team = None, away_team = None):
                 else:
                     print("Aw Shucks, a sack")
                     downs = downs + 1
+
+                players_df = murphys_law_protocol(target, offense_team, defence_team, players_df)
 
         if game_status == "Ending":
             #Do we need overtime
@@ -584,6 +589,92 @@ def simulate_match(home_team = None, away_team = None):
 
     # Save updates to CSV
     players_df.to_csv(CSV_FILE, index=False)
+
+def murphys_law_protocol(target, offense_team, def_team, players_df):
+    #There should always be a chance for a player to get hurt, or killed
+    dice_roll = random.randint(0,3000)
+    removal_type = ""
+    teams_df = pd.read_csv(TEAM_CSV_FILE)
+    target = target["Name"]
+
+    if dice_roll < 5:
+        #AKA 1 in every 200 plays
+        #They get hurt
+        injury_type = random.choice(["Leg", "Arm", "Back", "Everything"])
+        if injury_type == "Leg":
+            print(f"OH WHAT A ROUGH TACKLE FROM {def_team}'S DEFENSE. {target} WILL NOT BE RECOVERING FROM THAT! Is their leg supposed to bend like that?")
+        elif injury_type == "Arm":
+            print(f"OH GOD {def_team}'S DEFENSE. JUST BROKE {target}'S ARM!")
+        elif injury_type == "Back":
+            print(f"I THOUGH THIS WAS FOOTBALL NOT MMA. {target} IS NOW BEING CARRIED OUT ON A GURNEY WITH A BACK INJURY!")
+        elif injury_type == "Everything":
+            print(f"Whelp, if {target} is on your team, I'd consider dropping them. They're contorted into a pretzel shape")
+
+        removal_type = "Hurt"
+        send_to_discord(f"{target} left the game with a {injury_type} injury.", WEBHOOK)
+
+    elif dice_roll < 7:
+        #AKA 1 in every 500 plays
+        #They die
+        send_to_discord(f"The flags will raise half mast today in honor of {target} who died for FaFaFoo", WEBHOOK)
+        print(f"The flags will raise half mast today in honor of {target} who died for FaFaFoo")
+        removal_type = "Dead"
+
+    # If removal_type was set, update the player's status
+    if removal_type != "":
+        # Update the player's status
+        players_df.loc[players_df["Name"] == target, "Status"] = removal_type
+
+        # Go through each team to find and update the injured player's slot
+        for idx, row in teams_df.iterrows():
+            for starter, backup in [
+                ("QB1", "QB2"),
+                ("RB1", "RB3"),
+                ("RB2", "RB4"),
+                ("WR1", "WR3"),
+                ("WR2", "WR4"),
+                ("TE1", "TE2"),
+                ("K1", "K2")
+            ]:
+                if row[starter] == target:
+                    promoted_player = row[backup]
+                    print(f"Promoting {promoted_player} to replace {target} at {starter} for {row['City']} {row['Team_Name']}")
+                    send_to_discord(f"Promoting {promoted_player} to replace {target} at {starter} for {row['City']} {row['Team_Name']}", WEBHOOK)
+                    teams_df.at[idx, starter] = promoted_player
+
+                    #Update Status'
+                    players_df.loc[players_df["Name"] == promoted_player, "Status"] = "Active"
+
+                    # Determine the position from the starter slot
+                    position = starter[:2].replace("1", "")  # Handles QB1, RB1 → QB, RB etc.
+
+                    # Find best available free agent for the position
+                    free_agents = players_df[
+                        (players_df["City_Team"] == "No Team") &
+                        (players_df["Position"] == position)
+                    ]
+                    if not free_agents.empty:
+                        best_free_agent = free_agents.sort_values("TPs", ascending=False).iloc[0]
+                        new_backup = best_free_agent["Name"]
+                        print(f"{row['City']} {row['Team_Name']} signs free agent {new_backup} as new {backup}")
+
+                        # Update the backup slot in the team
+                        teams_df.at[idx, backup] = new_backup
+
+                        # Update the free agent's City_team field
+                        players_df.loc[players_df["Name"] == new_backup, "City_team"] = f"{row['City']} {row['Team_Name']}"
+                        players_df.loc[players_df["Name"] == new_backup, "Status"] = "Benched"
+                    else:
+                        print(f"No free agent available to fill {backup} for {row['City']} {row['Team_Name']}")
+                    
+                    break  # Done processing this team
+
+        # Save changes
+        players_df.to_csv(CSV_FILE, index=False)
+        teams_df.to_csv(TEAM_CSV_FILE, index=False)
+    return players_df
+
+
 
 
 def run_week(week_number=None):
