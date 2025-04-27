@@ -362,7 +362,7 @@ def simulate_match(home_team = None, away_team = None):
                 else:
                     print("Pass incomplete")
                     downs = downs + 1
-                players_df = murphys_law_protocol(target, offense_team, defence_team, players_df)
+                players_df, teams_df = murphys_law_protocol(target, offense_team, defence_team, players_df)
 
             elif(qb_choice=="Short Pass"):
                 #Choose who we target the throw to based off of finesse and Gumption stats of RB & TE
@@ -417,7 +417,7 @@ def simulate_match(home_team = None, away_team = None):
                 else:
                     print("Pass incomplete")
                     downs = downs + 1
-                players_df = murphys_law_protocol(target, offense_team, defence_team, players_df)
+                players_df, teams_df = murphys_law_protocol(target, offense_team, defence_team, players_df)
 
             elif(qb_choice=="Hand Off"):
                 #Choose who we target the throw to based off of Strength and Gumption stats of RB
@@ -473,7 +473,7 @@ def simulate_match(home_team = None, away_team = None):
                     else:
                         update_player_pts(home_def, 1)
                     downs = downs + 1
-                players_df = murphys_law_protocol(target, offense_team, defence_team, players_df)
+                players_df, teams_df = murphys_law_protocol(target, offense_team, defence_team, players_df)
 
             elif(qb_choice=="Rush"):
                 print(f"{qb_name} is deciding to {qb_choice}")
@@ -512,7 +512,7 @@ def simulate_match(home_team = None, away_team = None):
                     print("Aw Shucks, a sack")
                     downs = downs + 1
 
-                players_df = murphys_law_protocol(target, offense_team, defence_team, players_df)
+                players_df, teams_df = murphys_law_protocol(target, offense_team, defence_team, players_df)
 
         if game_status == "Ending":
             #Do we need overtime
@@ -575,10 +575,10 @@ def simulate_match(home_team = None, away_team = None):
     # Select only the desired columns
     display_df = players_df[["Name", "Position", "Species", "Projected_Skill", "City_Team", "Player_Team", "Status", "GPs", "TPs"]]
     home_team_display = display_df[
-        (display_df["City_Team"] == home_team) & (display_df["Status"] != "Benched")
+        (display_df["City_Team"] == home_team) & (display_df["Status"] != "Benched") & ~((display_df["GPs"] == 0) & (display_df["Status"] != "Active"))
     ]
     away_team_display = display_df[
-        (display_df["City_Team"] == away_team) & (display_df["Status"] != "Benched")
+        (display_df["City_Team"] == away_team) & (display_df["Status"] != "Benched") & ~((display_df["GPs"] > 0) & (display_df["Status"] != "Active"))
     ]
     # Sort by best preforming person on team
     display_home = home_team_display.sort_values(by="GPs", ascending=False)
@@ -672,7 +672,7 @@ def murphys_law_protocol(target, offense_team, def_team, players_df):
         # Save changes
         players_df.to_csv(CSV_FILE, index=False)
         teams_df.to_csv(TEAM_CSV_FILE, index=False)
-    return players_df
+    return players_df, teams_df
 
 
 

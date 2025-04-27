@@ -53,9 +53,11 @@ def get_stat(stat_name):
 def get_position(auto_generate=False):
     if not auto_generate:
         print(f"Potential positions: {POSITIONS}")
-        choice = input(f"Enter position (or type 'random' for a random position): ").strip().lower()
+        choice = input(f"Enter position (or type 'random' for a random position): ").strip()
         if choice in POSITIONS:
             return choice
+        else:
+            print("Position is not valid, assigning random one")
     return random.choice(POSITIONS)
 
 # Function to create a player
@@ -92,10 +94,7 @@ def create_player(auto_generate = False, position = "", defense_name = ""):
         if position == "":
             species = input(f"Enter species {list(NAME_POOLS.keys())}: ").strip()
             species_list = [species_name.lower for species_name in list(NAME_POOLS.keys())]
-            if species not in NAME_POOLS:
-                print("Unknown species. Assigning a random one.")
-                species = random.choice(list(NAME_POOLS.keys()))
-                print(f"Your species is {species}")
+
             name = input("Enter name (or type 'random' for an auto-generated name): ").strip()
             if name.lower() == "random" or name.lower() == "":
                 name = generate_name(species)
@@ -772,6 +771,8 @@ if __name__ == "__main__":
             simulate_match()
         elif choice =="93":
             run_week()
+        elif choice =="94":
+            view_roster()
         elif choice == "96":
             create_schedule()
         elif choice == "97":
