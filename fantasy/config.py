@@ -1,13 +1,13 @@
 # Define the CSV file name
-CSV_FILE = "players.csv"
+CSV_FILE = "players_test.csv"
 # Define the CSV file for teams
-TEAM_CSV_FILE = "city_teams.csv"
-PLAYER_TEAM_CSV_FILE = "player_teams.csv"
+TEAM_CSV_FILE = "city_test_teams.csv"
+PLAYER_TEAM_CSV_FILE = "player_test_teams.csv"
 # Define the CSV files for schedules
-CITY_SCHEDULE = "city_schedule.csv"
-PLAYER_SCHEDULE = "player_schedule.csv"
+CITY_SCHEDULE = "city_test_schedule.csv"
+PLAYER_SCHEDULE = "player_test_schedule.csv"
 
-WEBHOOK = "https://discord.com/api/webhooks/1359271866279399556/S5bYe2rs25bjllyRNWl3jIIA0Q2WTQQ2BbqnMFCikseGpNh6-DsYgLFHn5tkungZKoWm"
+WEBHOOK = "https://discord.com/api/webhooks/1377679929709432852/1UwNVqYcXwHfeRVVF7TPKeuUX_HMLWGWrm18U-s3S5qeqA9xuJ8xCdqvmovKykpLKUJI"
 
 POSITIONS = ["QB", "WR", "RB", "TE", "K"]
 # Name pools categorized by species, with heroic, villainous, and WWE-style names
