@@ -592,7 +592,7 @@ def simulate_match(home_team = None, away_team = None):
 
 def murphys_law_protocol(target, offense_team, def_team, players_df):
     #There should always be a chance for a player to get hurt, or killed
-    dice_roll = random.randint(0,3000)
+    dice_roll = random.randint(0,2500)
     removal_type = ""
     teams_df = pd.read_csv(TEAM_CSV_FILE)
     target = target["Name"]
@@ -654,7 +654,7 @@ def murphys_law_protocol(target, offense_team, def_team, players_df):
                         (players_df["Position"] == position)
                     ]
                     if not free_agents.empty:
-                        best_free_agent = free_agents.sort_values("TPs", ascending=False).iloc[0]
+                        best_free_agent = (free_agents.sort_values("TPs", ascending=False)).iloc[0]
                         new_backup = best_free_agent["Name"]
                         print(f"{row['City']} {row['Team_Name']} signs free agent {new_backup} as new {backup}")
 
@@ -662,7 +662,7 @@ def murphys_law_protocol(target, offense_team, def_team, players_df):
                         teams_df.at[idx, backup] = new_backup
 
                         # Update the free agent's City_team field
-                        players_df.loc[players_df["Name"] == new_backup, "City_team"] = f"{row['City']} {row['Team_Name']}"
+                        players_df.loc[players_df["Name"] == new_backup, "City_Team"] = f"{row['City']} {row['Team_Name']}"
                         players_df.loc[players_df["Name"] == new_backup, "Status"] = "Benched"
                     else:
                         print(f"No free agent available to fill {backup} for {row['City']} {row['Team_Name']}")

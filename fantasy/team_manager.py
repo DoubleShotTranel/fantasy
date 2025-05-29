@@ -210,6 +210,8 @@ def add_from_free_agents(team_name):
     available_players = players_df[
         (players_df["Position"] == position) &
         (players_df["Status"] == "Active") &
+        #If you want to allow the player to pickup players on the bench, comment the line above and uncomment the one below
+        #((players_df["Status"] == "Active") | (players_df["Status"] == "Benched")) &
         (players_df["Player_Team"] == "No Team")
     ]
 

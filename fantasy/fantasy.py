@@ -15,6 +15,7 @@ from draft import city_draft, player_draft
 from scheduler import create_schedule, view_player_schedule, finalize_week
 from team_manager import manage_team
 from util import send_to_discord
+from views import view_wl_record, view_city_wl_record, view_injury_report, check_for_nonsense
 
 
 # Function to generate a random name based on species
@@ -730,6 +731,9 @@ if __name__ == "__main__":
         print("7. View Player Matchup")
         print("8. View Week Matchups")
         print("9. Manage Team")
+        print("10. View W/L Records")
+        print("11. View Injury Report")
+        print("12. View City W/L Records")
 
         #secret options for Jarrett
         #99 = create defenses for city teams
@@ -761,6 +765,12 @@ if __name__ == "__main__":
             view_player_schedule()
         elif choice == "9":
             manage_team()
+        elif choice == "10":
+            view_wl_record()
+        elif choice == "11":
+            view_injury_report()
+        elif choice == "12":
+            view_city_wl_record()
 
         #secret options
         elif choice =="90":
@@ -773,6 +783,8 @@ if __name__ == "__main__":
             run_week()
         elif choice =="94":
             view_roster()
+        elif choice == "95":
+            check_for_nonsense()
         elif choice == "96":
             create_schedule()
         elif choice == "97":
